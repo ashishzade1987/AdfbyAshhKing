@@ -1,0 +1,216 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "20adf-rg"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
+		},
+		"AzureBlobStorage2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage2'"
+		},
+		"ls_adls_customer_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_adls_customer'"
+		},
+		"ls_hwm_adls_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_hwm_adls'"
+		},
+		"ls_p1_read_adls_json_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_p1_read_adls_json'"
+		},
+		"ls_read_empty_json_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_read_empty_json'"
+		},
+		"ls_sink_customer_json_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_sink_customer_json'"
+		},
+		"ls_sm_customer_database_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_sm_customer_database'"
+		},
+		"ls_sm_hwm_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_sm_hwm'"
+		},
+		"ls_sm_sink_customer_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_sm_sink_customer'"
+		},
+		"ls_source_folder_read_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_source_folder_read'"
+		},
+		"ls_adls_customer_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_hwm_adls_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_p1_read_adls_json_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_read_empty_json_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_sink_customer_json_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_sm_customer_database_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "smritiserver.database.windows.net"
+		},
+		"ls_sm_customer_database_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "smritidatabase"
+		},
+		"ls_sm_customer_database_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "smritiadmin"
+		},
+		"ls_sm_hwm_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_sm_sink_customer_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_source_folder_read_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "20adf-rg_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStorage1_connectionString": {
+						"value": "[parameters('AzureBlobStorage1_connectionString')]"
+					},
+					"AzureBlobStorage2_connectionString": {
+						"value": "[parameters('AzureBlobStorage2_connectionString')]"
+					},
+					"ls_adls_customer_accountKey": {
+						"value": "[parameters('ls_adls_customer_accountKey')]"
+					},
+					"ls_hwm_adls_accountKey": {
+						"value": "[parameters('ls_hwm_adls_accountKey')]"
+					},
+					"ls_p1_read_adls_json_accountKey": {
+						"value": "[parameters('ls_p1_read_adls_json_accountKey')]"
+					},
+					"ls_read_empty_json_accountKey": {
+						"value": "[parameters('ls_read_empty_json_accountKey')]"
+					},
+					"ls_sink_customer_json_accountKey": {
+						"value": "[parameters('ls_sink_customer_json_accountKey')]"
+					},
+					"ls_sm_customer_database_password": {
+						"value": "[parameters('ls_sm_customer_database_password')]"
+					},
+					"ls_sm_hwm_accountKey": {
+						"value": "[parameters('ls_sm_hwm_accountKey')]"
+					},
+					"ls_sm_sink_customer_accountKey": {
+						"value": "[parameters('ls_sm_sink_customer_accountKey')]"
+					},
+					"ls_source_folder_read_accountKey": {
+						"value": "[parameters('ls_source_folder_read_accountKey')]"
+					},
+					"ls_adls_customer_properties_typeProperties_url": {
+						"value": "[parameters('ls_adls_customer_properties_typeProperties_url')]"
+					},
+					"ls_hwm_adls_properties_typeProperties_url": {
+						"value": "[parameters('ls_hwm_adls_properties_typeProperties_url')]"
+					},
+					"ls_p1_read_adls_json_properties_typeProperties_url": {
+						"value": "[parameters('ls_p1_read_adls_json_properties_typeProperties_url')]"
+					},
+					"ls_read_empty_json_properties_typeProperties_url": {
+						"value": "[parameters('ls_read_empty_json_properties_typeProperties_url')]"
+					},
+					"ls_sink_customer_json_properties_typeProperties_url": {
+						"value": "[parameters('ls_sink_customer_json_properties_typeProperties_url')]"
+					},
+					"ls_sm_customer_database_properties_typeProperties_server": {
+						"value": "[parameters('ls_sm_customer_database_properties_typeProperties_server')]"
+					},
+					"ls_sm_customer_database_properties_typeProperties_database": {
+						"value": "[parameters('ls_sm_customer_database_properties_typeProperties_database')]"
+					},
+					"ls_sm_customer_database_properties_typeProperties_userName": {
+						"value": "[parameters('ls_sm_customer_database_properties_typeProperties_userName')]"
+					},
+					"ls_sm_hwm_properties_typeProperties_url": {
+						"value": "[parameters('ls_sm_hwm_properties_typeProperties_url')]"
+					},
+					"ls_sm_sink_customer_properties_typeProperties_url": {
+						"value": "[parameters('ls_sm_sink_customer_properties_typeProperties_url')]"
+					},
+					"ls_source_folder_read_properties_typeProperties_url": {
+						"value": "[parameters('ls_source_folder_read_properties_typeProperties_url')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "20adf-rg_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', '20adf-rg_ArmTemplate_0')]"
+			]
+		}
+	]
+}

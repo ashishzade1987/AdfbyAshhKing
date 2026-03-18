@@ -1,0 +1,75 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "20adf-rg"
+		},
+		"AzureBlobStorage1_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage2_connectionString": {
+			"value": ""
+		},
+		"ls_adls_customer_accountKey": {
+			"value": ""
+		},
+		"ls_hwm_adls_accountKey": {
+			"value": ""
+		},
+		"ls_p1_read_adls_json_accountKey": {
+			"value": ""
+		},
+		"ls_read_empty_json_accountKey": {
+			"value": ""
+		},
+		"ls_sink_customer_json_accountKey": {
+			"value": ""
+		},
+		"ls_sm_customer_database_password": {
+			"value": ""
+		},
+		"ls_sm_hwm_accountKey": {
+			"value": ""
+		},
+		"ls_sm_sink_customer_accountKey": {
+			"value": ""
+		},
+		"ls_source_folder_read_accountKey": {
+			"value": ""
+		},
+		"ls_adls_customer_properties_typeProperties_url": {
+			"value": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_hwm_adls_properties_typeProperties_url": {
+			"value": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_p1_read_adls_json_properties_typeProperties_url": {
+			"value": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_read_empty_json_properties_typeProperties_url": {
+			"value": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_sink_customer_json_properties_typeProperties_url": {
+			"value": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_sm_customer_database_properties_typeProperties_server": {
+			"value": "smritiserver.database.windows.net"
+		},
+		"ls_sm_customer_database_properties_typeProperties_database": {
+			"value": "smritidatabase"
+		},
+		"ls_sm_customer_database_properties_typeProperties_userName": {
+			"value": "smritiadmin"
+		},
+		"ls_sm_hwm_properties_typeProperties_url": {
+			"value": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_sm_sink_customer_properties_typeProperties_url": {
+			"value": "https://smritiadf.dfs.core.windows.net/"
+		},
+		"ls_source_folder_read_properties_typeProperties_url": {
+			"value": "https://smritiadf.dfs.core.windows.net/"
+		}
+	}
+}
