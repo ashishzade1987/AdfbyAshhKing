@@ -1,0 +1,43 @@
+{
+	"name": "ds_sw_database_customer",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sm_customer_database",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "customer_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "customer_name",
+				"type": "varchar"
+			},
+			{
+				"name": "email",
+				"type": "varchar"
+			},
+			{
+				"name": "phone",
+				"type": "varchar"
+			},
+			{
+				"name": "city",
+				"type": "varchar"
+			},
+			{
+				"name": "created_date",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "SW_SHOP",
+			"table": "customers"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

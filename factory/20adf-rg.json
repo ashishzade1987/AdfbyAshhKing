@@ -1,0 +1,9 @@
+{
+	"name": "20adf-rg",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "71075a6c-a661-463f-843f-ef694684f3ac",
+		"tenantId": "aeb53e34-80bf-44f3-90fd-888814a87809"
+	}
+}
