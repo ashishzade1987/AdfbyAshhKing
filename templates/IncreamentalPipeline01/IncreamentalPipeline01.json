@@ -1,0 +1,378 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name"
+		},
+		"ls_sm_customer_database": {
+			"type": "string"
+		},
+		"ls_p1_read_adls_json": {
+			"type": "string"
+		},
+		"ls_sm_sink_customer": {
+			"type": "string"
+		},
+		"ls_read_empty_json": {
+			"type": "string"
+		},
+		"ls_sm_hwm": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/IncreamentalPipeline01')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Read HWM date",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "ds_p1_read_hwm_json",
+								"type": "DatasetReference"
+							}
+						}
+					},
+					{
+						"name": "Move data from DB to ADLS",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Read HWM date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "SELECT * FROM SW_SHOP.customers WHERE created_date > '@{activity('Read HWM date').output.firstRow.last_udated_date}'",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_sw_database_customer",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sw_sink_customer",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Max Record Date",
+						"type": "Script",
+						"dependsOn": [
+							{
+								"activity": "Move data from DB to ADLS",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"linkedServiceName": {
+							"referenceName": "[parameters('ls_sm_customer_database')]",
+							"type": "LinkedServiceReference"
+						},
+						"typeProperties": {
+							"scripts": [
+								{
+									"type": "Query",
+									"text": {
+										"value": "SELECT MAX(created_date) AS last_update_date FROM SW_SHOP.customers",
+										"type": "Expression"
+									}
+								}
+							],
+							"scriptBlockExecutionTimeout": "02:00:00"
+						}
+					},
+					{
+						"name": "update hwm json file",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Max Record Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"additionalColumns": [
+									{
+										"name": "last_udated_date",
+										"value": {
+											"value": "@activity('Max Record Date').output.resultSets[0].rows[0].last_update_date",
+											"type": "Expression"
+										}
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_empty_json",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sm_hwm_json",
+								"type": "DatasetReference"
+							}
+						]
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2026-03-17T11:52:17Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_p1_read_hwm_json')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sw_database_customer')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sw_sink_customer')]",
+				"[concat(variables('factoryId'), '/datasets/ds_empty_json')]",
+				"[concat(variables('factoryId'), '/datasets/ds_sm_hwm_json')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_p1_read_hwm_json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_p1_read_adls_json')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "hwm.json",
+						"fileSystem": "main"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"last_udated_date": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sw_database_customer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_sm_customer_database')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "customer_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "customer_name",
+						"type": "varchar"
+					},
+					{
+						"name": "email",
+						"type": "varchar"
+					},
+					{
+						"name": "phone",
+						"type": "varchar"
+					},
+					{
+						"name": "city",
+						"type": "varchar"
+					},
+					{
+						"name": "created_date",
+						"type": "date"
+					}
+				],
+				"typeProperties": {
+					"schema": "SW_SHOP",
+					"table": "customers"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sw_sink_customer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_sm_sink_customer')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "destination",
+						"fileSystem": "main"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_empty_json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_read_empty_json')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "empty_json.json",
+						"fileSystem": "main"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_sm_hwm_json')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('ls_sm_hwm')]",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "hwm.json",
+						"fileSystem": "main"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"last_udated_date": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
