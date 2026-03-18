@@ -1,0 +1,19 @@
+{
+	"name": "ds_sw_sink_customer1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_p1_read_adls_json",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "destination",
+				"fileSystem": "main"
+			}
+		},
+		"schema": {}
+	}
+}

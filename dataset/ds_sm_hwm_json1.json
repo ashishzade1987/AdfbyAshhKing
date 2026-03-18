@@ -1,0 +1,26 @@
+{
+	"name": "ds_sm_hwm_json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sm_hwm",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "hwm.json",
+				"fileSystem": "main"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"last_udated_date": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

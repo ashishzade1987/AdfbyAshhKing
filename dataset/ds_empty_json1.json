@@ -1,0 +1,19 @@
+{
+	"name": "ds_empty_json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_read_empty_json",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "empty_json.json",
+				"fileSystem": "main"
+			}
+		},
+		"schema": {}
+	}
+}
